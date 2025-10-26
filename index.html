@@ -807,6 +807,35 @@ document.addEventListener('visibilitychange', () => {
     window.addEventListener('resize', () => requestAnimationFrame(syncOpenCardWidth));
 
     // ===== Gift JS DIHAPUS (card gift ditiadakan) =====
+// Play musik saat tombol "Open Card" diklik
+(function () {
+  const btn = document.getElementById('openCardBelow');
+  if (!btn) return;
+
+  btn.addEventListener('click', async () => {
+    try {
+      const TARGET = 0.85;                  // volume tujuan
+      audio.muted = false;
+      if (audio.paused) await audio.play(); // mulai musik
+
+      // fade-in volume biar halus
+      let v = audio.volume || 0;
+      audio.volume = v;
+      const ramp = () => {
+        v = Math.min(TARGET, v + 0.08);
+        audio.volume = v;
+        if (v < TARGET) requestAnimationFrame(ramp);
+      };
+      requestAnimationFrame(ramp);
+    } catch (e) {
+      /* silent */
+    } finally {
+      // sinkronkan ikon ▶ / ❚❚ jika kamu pakai updateUI()
+      if (typeof updateUI === 'function') updateUI();
+    }
+  });
+})();
+
   </script>
 </body>
 </html>
